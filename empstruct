@@ -1,0 +1,49 @@
+#include <cstdio>
+#include <cstring>
+
+typedef struct {
+    int id;
+    char name[50];
+    int age;
+    float salary;
+} Employee;
+
+void readEmployeesFromFile(const char *filename, Employee employees[], int &count) {
+    FILE *file = fopen(filename, "r");
+    if (file == nullptr) {
+        perror("Error opening file");
+        return;
+    }
+
+    count = 0;
+    while (fscanf(file, "%d %49s %d %f", &employees[count].id, employees[count].name, &employees[count].age, &employees[count].salary) == 4) {
+        count++;
+    }
+
+    if (fclose(file) != 0) {
+        perror("Error closing file");
+    }
+}
+
+void displayEmployees(const Employee employees[], int count) {
+    for (int i = 0; i < count; i++) {
+        printf("ID: %d, Name: %s, Age: %d, Salary: $%.2f\n", employees[i].id, employees[i].name, employees[i].age, employees[i].salary);
+    }
+}
+
+int main() {
+    const int MAX_EMPLOYEES = 100; // Set a maximum number of employees
+    Employee employees[MAX_EMPLOYEES];
+    int employeeCount = 0;
+    const char *filename = "employees.txt";
+
+    readEmployeesFromFile(filename, employees, employeeCount);
+
+    if (employeeCount > 0) {
+        displayEmployees(employees, employeeCount);
+    } else {
+        printf("No employee data found.\n");
+    }
+
+    return 0;
+}
